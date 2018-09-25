@@ -108,3 +108,36 @@ print(auc)
 
 
 
+
+
+
+#Changing model to no longer use SibSp,Parch.Fare,Embacked and basing it of the full dataset for predicting
+  #survival in the unknown outcome dataset
+
+model2<-glm(Survived ~.,family=binomial(link='logit'),subset(data,select=c(1,2,3,4)))
+summary(model2)
+
+#Importing unknown outcome dataset
+uo.data.raw <- read.csv("test.csv",header=T, na.strings=c(""))
+
+#dropping columns not needed and applying average age to null ages
+uo<-subset(uo.data.raw, select =c(2,4,5))
+uo$Age[is.na(uo$Age)] <- mean(uo$Age, na.rm=T)
+
+#applying the model
+prob<-predict(model2, newdata=uo, type="response")
+predict<-ifelse(prob > 0.5,1,0)
+
+#attaching prediction to uknown outcome dataset
+predict.list<-as.data.frame(cbind(predict))
+output<-cbind(uo.data.raw,predict.list)
+final.prediction<-subset(output, select=c(1,12))
+
+#bringing in the result dataset
+final.result <- read.csv("gender_submission.csv",header=T, na.strings=c(""))
+
+final.outcome<-merge(final.prediction, final.result)
+
+final.outcome$Difference<-ifelse(final.outcome$predict != final.outcome$Survived,1,0)
+Error <- mean(final.outcome$Difference)
+print(paste('Accuracy',1-Error))
