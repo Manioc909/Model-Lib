@@ -140,4 +140,4 @@ final.outcome<-merge(final.prediction, final.result)
 
 final.outcome$Difference<-ifelse(final.outcome$predict != final.outcome$Survived,1,0)
 Error <- mean(final.outcome$Difference)
-print(paste('Accuracy',1-Error))
+print(paste('Accuracy',1-Error)) #Final Prediction Accuracy of 96.4%
