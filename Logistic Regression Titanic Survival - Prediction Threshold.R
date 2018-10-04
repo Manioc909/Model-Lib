@@ -48,10 +48,12 @@ for(i in 1:99){
 final.result <- read.csv("gender_submission.csv",header=T, na.strings=c(""))
 final.outcome<-merge(output, final.result)
 
+#Histogram of the probability of survival
+library(ggplot2)
+ggplot(final.outcome,aes(prob))+geom_histogram(bins=100)
+#Outcome of plot shows a clear cluster at ~7% and some spikes near 50%.
 
 #Want to measure a few main points for each prediction threshold
 # 1. Accuracy
 # 2. Errors
-
-
 
